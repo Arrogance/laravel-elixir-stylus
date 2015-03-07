@@ -7,13 +7,15 @@ var gulpif = require('gulp-if');
 var elixir = require('laravel-elixir');
 var utilities = require('laravel-elixir/ingredients/commands/Utilities');
 
-elixir.extend('stylus', function(src, output) {
+elixir.extend('stylus', function(src, output, extra) {
 
     var config = this;
 
     var baseDir = config.assetsDir + 'stylus';
 
     src = utilities.buildGulpSrc(src, baseDir, '**/*.styl');
+
+    extra = extra || {};
 
     gulp.task('stylus', function() {
         var onError = function(err) {
@@ -28,7 +30,7 @@ elixir.extend('stylus', function(src, output) {
         };
 
         return gulp.src(src)
-            .pipe(stylus()).on('error', onError)
+            .pipe(stylus(extra)).on('error', onError)
             .pipe(autoprefixer())
             .pipe(gulpif(config.production, minify()))
             .pipe(gulp.dest(output || config.cssOutput))
